@@ -1,15 +1,14 @@
 #!/bin/bash
 # Set your central monitoring cluster and credentials
-# ES_URL="https://central-coe-cluster"
-ES_URL="https://sg-mon-f2f5b2.es.ap-southeast-1.aws.found.io"
+ES_URL="https://central-coe-cluster"
 
 # Requires create_index and write privilege on ES_INDEX on central monitoring cluster
-ES_USER="license-writer"
+ES_USER="write_license"
 ES_PASS="P@ssw0rd"
 ES_INDEX="cluster_license_summary"
 
 #Requires cluster:monitor privilege on remote cluster
-REMOTE_USER="license-check"
+REMOTE_USER="get_license"
 REMOTE_PASS="P@ssw0rd"
 
 # Check for dependencies
@@ -24,7 +23,7 @@ if ! command -v jq &> /dev/null; then
 fi
 # List of remote clusters
 CLUSTERS=(
-    "https://sg-src.es.ap-southeast-1.aws.found.io" 
+    "remote1" 
 	"remote2" 
 	"remote3" 
 	"remote4"
@@ -75,4 +74,5 @@ for CLUSTER in "${CLUSTERS[@]}"; do
   # Index the document into Elasticsearch
   curl -s -u "$ES_USER:$ES_PASS" -H "Content-Type: application/json" \
     -XPOST "$ES_URL/$ES_INDEX/_doc" -d "$DOC"
+
 done
